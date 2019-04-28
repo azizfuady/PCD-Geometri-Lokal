@@ -22,7 +22,7 @@ function varargout = pcd2(varargin)
 
 % Edit the above text to modify the response to help pcd2
 
-% Last Modified by GUIDE v2.5 27-Apr-2019 20:13:52
+% Last Modified by GUIDE v2.5 28-Apr-2019 10:21:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -309,33 +309,25 @@ im = frame2im(frame);
 imwrite(im, 'hasil.jpg')
 
 
-%FACE DETECTION
+% PERTAJAM (LAPLACIAN FILTER)
 % --- Executes on button press in pushbutton9.
 function pushbutton9_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton9 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+img = handles.data1;
 
-%Detect objects using Viola-Jones Algorithm
-
-%To detect Face
-FDetect = vision.CascadeObjectDetector;
-
-%Read the input image
-I = handles.data1;
-
-%Returns Bounding Box values based on number of objects
-BB = step(FDetect,I);
+image = img;
+filter=[0 -1 0 ; -1 5 -1 ; 0 -1 0];
+[rows,cols] = size(image);
+outputimage = zeros(rows,cols);
+filtered_3x3 = imfilter(image,filter,'replicate');
+outputimage = im2uint8(filtered_3x3);
 
 axes(handles.axes2);
-imshow(I);
-hold on
-for i = 1:size(BB,1)
-    rectangle('Position',BB(i,:),'LineWidth',5,'LineStyle','-','EdgeColor','r');
-end
-title('Face Detection');
-hold off;
-handles.data2 = I;
+imshow(outputimage);
+title('Hasil Pertajaman (Laplacian Filter)');
+handles.data2 = B;
 guidata(hObject,handles);
 
 
@@ -353,6 +345,7 @@ handles.data1 = img;
 guidata(hObject,handles);
 
 
+% FILTER RATA-RATA KERNEL 5*5
 % --- Executes on button press in pushbutton11.
 function pushbutton11_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton11 (see GCBO)
